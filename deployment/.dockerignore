@@ -1,0 +1,8 @@
+.git
+.gitignore
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.py[codz]
+*$py.class
