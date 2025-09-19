@@ -7,11 +7,12 @@ from torchvision import transforms
 from PIL import Image
 import os
 
+
 class AttractivenessDataset(Dataset):
     def __init__(self, annotations_file: str, transform=None):
         self.img_labels = pd.read_csv(
             os.path.join(config.data_base_path, "labels", annotations_file),
-            sep=r'\s+',
+            sep=r"\s+",
             header=None,
             names=["name", "score"],
         )
@@ -21,7 +22,9 @@ class AttractivenessDataset(Dataset):
         return len(self.img_labels)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(config.data_base_path, "images", self.img_labels.iloc[idx, 0])
+        img_path = os.path.join(
+            config.data_base_path, "images", self.img_labels.iloc[idx, 0]
+        )
         try:
             image = Image.open(img_path)
         except FileNotFoundError:

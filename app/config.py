@@ -7,6 +7,7 @@ class Config(BaseSettings):
     host: str = Field(validation_alias="API_HOST")
     port: int = Field(validation_alias="API_PORT")
     data_base_path: str = "dataset/data"
-    model_path: str = "app/models/saved/model.pth"
+    best_model_path: str = "app/models/saved/model.pth"
+
 
 config = Config()

@@ -6,14 +6,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import uvicorn
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        model.load(config.model_path)
+        model.load(config.best_model_path)
     except Exception as e:
         print(f"Error loading model: {e}")
         raise
     yield
+
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(model_router)
