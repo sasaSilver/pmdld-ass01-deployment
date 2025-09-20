@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+  client:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.client
+    ports:
+      - "8501:8501"
+    environment:
+      - API_HOST=api
+      - API_PORT=8000
+    depends_on:
+      - api
+    restart: unless-stopped

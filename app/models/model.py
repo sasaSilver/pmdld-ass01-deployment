@@ -15,12 +15,16 @@ class AttractivenessClassifier:
         self._transform = transforms.Compose(
             [
                 transforms.Resize((224, 224)),
+                transforms.Lambda(lambda x: x.convert("RGB") if x.mode != "RGB" else x),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
                 ),
             ]
         )
+        self._model: models.ResNet = None
+
+    def load(self, path: str):
         model = models.resnet50(weights="IMAGENET1K_V2")
         for param in model.parameters():
             param.requires_grad = False
@@ -32,8 +36,6 @@ class AttractivenessClassifier:
         )
         self._model = model
         self._model.to(self._device)
-
-    def load(self, path: str):
         self._model.load_state_dict(torch.load(path, map_location=self._device))
         self._model.to(self._device)
         self._model.eval()
@@ -44,7 +46,7 @@ class AttractivenessClassifier:
         self._model.eval()
         try:
             # Convert bytes to PIL Image
-            image = Image.open(io.BytesIO(image))
+            image: Image.Image = Image.open(io.BytesIO(image))
 
             # Apply transformations
             image_tensor = self._transform(image).unsqueeze(0).to(self._device)
@@ -52,6 +54,8 @@ class AttractivenessClassifier:
             # Make prediction
             with torch.no_grad():
                 output = self._model(image_tensor)
+
+            image.close()
 
             return output.item()
 
@@ -138,9 +142,7 @@ class AttractivenessClassifier:
         self._model.load_state_dict(torch.load(config.best_model_path))
         self._model.eval()
 
-        final_mae, final_rmse = self.evaluate(test_loader)
-        print(f"Final Test MAE: {final_mae:.4f}")
-        print(f"Final Test RMSE: {final_rmse:.4f}")
+        self.evaluate(test_loader)
 
     def evaluate(self, test_loader: DataLoader):
         if not self._model:
@@ -164,6 +166,9 @@ class AttractivenessClassifier:
 
         mae = total_mae / len(test_loader.dataset)
         rmse = total_rmse / len(test_loader.dataset) ** 0.5
+
+        print(f"Test MAE: {mae:.4f}")
+        print(f"Test RMSE: {rmse:.4f}")
 
         return mae, rmse
 
