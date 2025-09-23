@@ -1,0 +1,26 @@
+stages:
+  train:
+    cmd: python -m app.models.scripts --train
+    deps:
+      - app/models/scripts.py
+      - app/models/model.py
+      - dataset/data/
+    outs:
+      - app/models/saved/model.pth
+
+  evaluate:
+    cmd: python -m app.models.scripts --evaluate
+    deps:
+      - app/models/scripts.py
+      - app/models/saved/model.pth
+      - dataset/data/
+    outs:
+      - reports/confusion_matrix.png
+      - reports/classification_report.json
+
+  deploy:
+    cmd: docker-compose -f deployment/docker-compose.yaml up
+    deps:
+      - deployment/docker-compose.yaml
+      - client/
+      - app/

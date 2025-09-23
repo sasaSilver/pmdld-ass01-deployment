@@ -22,9 +22,6 @@ class AttractivenessClassifier:
                 ),
             ]
         )
-        self._model: models.ResNet = None
-
-    def load(self, path: str):
         model = models.resnet50(weights="IMAGENET1K_V2")
         for param in model.parameters():
             param.requires_grad = False
@@ -36,6 +33,8 @@ class AttractivenessClassifier:
         )
         self._model = model
         self._model.to(self._device)
+
+    def load(self, path: str):
         self._model.load_state_dict(torch.load(path, map_location=self._device))
         self._model.to(self._device)
         self._model.eval()
@@ -137,12 +136,6 @@ class AttractivenessClassifier:
             print()
 
         print(f"Training complete. Best val loss: {best_loss:.4f}")
-
-        # Load the best model and do a final evaluation
-        self._model.load_state_dict(torch.load(config.best_model_path))
-        self._model.eval()
-
-        self.evaluate(test_loader)
 
     def evaluate(self, test_loader: DataLoader):
         if not self._model:
