@@ -209,9 +209,3 @@ __marimo__/
 # Custom
 
 task.md
-
-app/dataset/data/labels/*
-app/dataset/data/images/*
-app/models/saved/model.pth
-
-dvcstore/

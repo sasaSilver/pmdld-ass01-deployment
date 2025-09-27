@@ -1,26 +1,21 @@
 stages:
   train:
-    cmd: python -m app.models.scripts --train
+    cmd: make train_attractiveness
     deps:
-      - app/models/scripts.py
-      - app/models/model.py
+      - api/models/attractiveness/model.py
       - dataset/data/
     outs:
-      - app/models/saved/model.pth
+      - models/attractiveness_classifier.pt
 
   evaluate:
-    cmd: python -m app.models.scripts --evaluate
+    cmd: make eval-attractiveness
     deps:
-      - app/models/scripts.py
-      - app/models/saved/model.pth
+      - api/models/attractiveness/model.py
+      - models/attractiveness_classifier.pt
       - dataset/data/
-    outs:
-      - reports/confusion_matrix.png
-      - reports/classification_report.json
 
   deploy:
-    cmd: docker-compose -f deployment/docker-compose.yaml up
+    cmd: make compose-up
     deps:
-      - deployment/docker-compose.yaml
-      - client/
-      - app/
+      - api/
+      - docker-compose.yaml

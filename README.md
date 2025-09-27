@@ -1,43 +1,34 @@
-# Assignment 01 - Deployment for the PMLDL course
+# PMLDL Project Backend by Okurki Team
 
-This repo contains a FastAPI api and a client with Streamlit containerized with Docker.
+This repo contains a fastapi backend with ml models for the project.
 
-## Repo Structure
-
-The structure of this repo is different from the recommended one in the assignment description.
+# Repo Structure
 
 ```
-├── app -- FastAPI app
-│   ├── api/ -- FastAPI app code
-│   └── models -- Model itself, its training code, and the saved model
-│       └── saved/ -- Saved models
+├── api -- FastAPI app
+│   ├── models/ -- ML models in pytorch
+│   ├── services/
+│   ├── v1/
 │   └── __main__.py -- FastAPI app entry point
-├── client -- Streamlit app
-│   └── __main__.py -- Streamlit app entry point
 ├── dataset -- Data-related files for dataset analysis and the dataset itself
 │    ├── data/ -- Dataset files
 │    └── analyze.ipynb -- Jupyter notebook for data analysis
-└── deployment
-    ├── Dockerfile.fastapi -- Dockerfile for the FastAPI app
-    ├── Dockerfile.streamlit -- Dockerfile for the Streamlit app
-    └── docker-compose.yml -- Docker Compose file for both apps
+├── models -- Trained ML models in .pt format
+├── tests/
 ```
 
-## Implemented model
+# Development
 
-The model is an "attractiveness classifier" that predicts the attractiveness score of a face based on its image.
+## Setup
 
-## Data
+1. Install [make](https://www.gnu.org/software/make/), [uv](https://www.uvproject.xyz/), [dvc](https://dvc.org/), [docker](https://docs.docker.com/get-docker/), [docker-compose](https://docs.docker.com/compose/install/)
 
-The dataset description can be found in the `dataset/README.md` file.
-This project uses `dvc` for data versioning with a local repository.
+2. Run `make pull-data` to pull the dataset and models from the remote repository
 
-## Deployment
+3. Run `make compose-up` to start the backend
 
-The deployment docker files and in `deployment/` folder, containing `Dockerfile.api`, `Dockerfile.client`, and `docker-compose.yml` files.
+To run locally, download dependencies `uv sync`, and start the app `uv run python -m api`
 
-To run the containers, run
+## Testing
 
-```
-docker-compose -f deployment/docker-compose.yml up
-```
+Run `make test` to run the tests
